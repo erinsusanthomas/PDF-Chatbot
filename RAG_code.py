@@ -55,27 +55,26 @@ db = FAISS(
 def add_to_chroma(store_dir, chunks: list[Document]):
     # db = Chroma(persist_directory = store_dir, embedding_function=get_embedding_function())
     chunks_with_ids = calculate_chunk_ids(chunks)
+    db.add_documents(chunks, ids=chunks_with_ids)
 
-    # Add or Update documents
+    # # Add or Update documents
     # existing_items = db.get(include=[])
     # existing_ids = set(existing_items['ids'])
-    existing_metadata = db.get_all()  # Assuming you have a metadata store for IDs and metadata
-    existing_ids = set([item['id'] for item in existing_metadata])  # Extract all existing document IDs
-    print(f"No. of existing documents in DB: {len(existing_ids)}")
+    # print(f"No. of existing documents in DB: {len(existing_ids)}")
 
-    # Only add documents that don't exist in DB
-    new_chunks = []
-    for chunk in chunks_with_ids:
-        if chunk.metadata['id'] not in existing_ids:
-            new_chunks.append(chunk)
-    if len(new_chunks):
-        print(f"Adding new documents: {len(new_chunks)}")
-        new_chunk_ids = [chunk.metadata['id'] for chunk in new_chunks]
-        db.add_documents(new_chunks, ids=new_chunk_ids)
-        # db.persist()
-        print(f"All new documents added ✅")
-    else:
-        print("No new documents to add ✅")
+    # # Only add documents that don't exist in DB
+    # new_chunks = []
+    # for chunk in chunks_with_ids:
+    #     if chunk.metadata['id'] not in existing_ids:
+    #         new_chunks.append(chunk)
+    # if len(new_chunks):
+    #     print(f"Adding new documents: {len(new_chunks)}")
+    #     new_chunk_ids = [chunk.metadata['id'] for chunk in new_chunks]
+    #     db.add_documents(new_chunks, ids=new_chunk_ids)
+    #     # db.persist()
+    #     print(f"All new documents added ✅")
+    # else:
+    #     print("No new documents to add ✅")
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context: {context}
