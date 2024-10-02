@@ -57,8 +57,10 @@ def add_to_chroma(store_dir, chunks: list[Document]):
     chunks_with_ids = calculate_chunk_ids(chunks)
 
     # Add or Update documents
-    existing_items = db.get(include=[])
-    existing_ids = set(existing_items['ids'])
+    # existing_items = db.get(include=[])
+    # existing_ids = set(existing_items['ids'])
+    existing_metadata = db.get_all()  # Assuming you have a metadata store for IDs and metadata
+    existing_ids = set([item['id'] for item in existing_metadata])  # Extract all existing document IDs
     print(f"No. of existing documents in DB: {len(existing_ids)}")
 
     # Only add documents that don't exist in DB
