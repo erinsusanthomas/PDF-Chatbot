@@ -4,15 +4,6 @@ import shutil
 import time
 from RAG_code import *
 
-# __import__('pysqlite3')
-# import sys
-# sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
-
-import pysqlite3
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-import sqlite3
-
 # Page configurations
 st.set_page_config(page_title="Chat with Your PDFs", layout="wide", initial_sidebar_state="expanded")
 # Heading
