@@ -4,6 +4,8 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
 # from langchain_chroma import Chroma
 # from langchain_community.vectorstores import Chroma
+import faiss
+from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain.prompts import ChatPromptTemplate
 
@@ -42,7 +44,10 @@ def get_embedding_function():
     return embeddings
 
 def add_to_chroma(store_dir, chunks: list[Document]):
-    db = InMemoryDocstore(persist_directory = store_dir, embedding_function=get_embedding_function())
+    index = faiss.IndexFlatL2(1024)
+    db = FAISS(embedding_function=get_embedding_function(), index=index, 
+                         docstore=InMemoryDocstore({}), index_to_docstore_id = {})
+    # db = Chroma(persist_directory = store_dir, embedding_function=get_embedding_function())
     chunks_with_ids = calculate_chunk_ids(chunks)
 
     # Add or Update documents
@@ -71,7 +76,10 @@ Answer the question based on the above context: {question}
 """
 
 def get_response(store_dir, query_text):
-    db = InMemoryDocstore(persist_directory=store_dir, embedding_function=get_embedding_function())
+    # db = Chroma(persist_directory=store_dir, embedding_function=get_embedding_function())
+    index = faiss.IndexFlatL2(1024)
+    db = FAISS(embedding_function=get_embedding_function(), index=index, 
+                         docstore=InMemoryDocstore({}), index_to_docstore_id = {})
     results = db.similarity_search_with_score(query_text, k=5)
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
 
